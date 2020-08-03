@@ -10,3 +10,9 @@ data_R<-read.table("wineQualityReds.csv", header=TRUE, sep=",")[,-1]
 table(is.na(data_W))
 table(is.na(data_R))
 
+# Add column indicating the wine type
+data_W$type <- 'white'
+data_R$type <- 'red'
+
+# Combine the two dataframes
+data <- rbind(data_W,data_R)
