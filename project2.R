@@ -195,3 +195,13 @@ auc@y.values[[1]]
 # see confusion table
 table(test$wine, preds>0.5)
 # very nice
+
+# find type 1 error ,type 2 error, sensitivity, and specificity 
+# FP / (TN + FP)
+t1e =  10 /(823+10) # 0.0120048
+#  FN / (FN + TP)
+t2e = 6 /(6+2409) # 0.002484472
+# TP / (FN + TP)
+sen = 2409 /(6+2409) # 0.9975155
+# TN / (TN + FP)
+spe = 823 /(823+10) # 0.9879952
