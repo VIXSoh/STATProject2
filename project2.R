@@ -171,6 +171,10 @@ lmod_S <- glm( wine ~ total.sulfur.dioxide + density + residual.sugar +
       fixed.acidity + pH + quality, family = binomial, data = train)
 # removed chitric.acid and sulphates
 
+# see if all coef are 0
+1-pchisq(regnull$deviance-regfull$deviance,12)
+# 0 no at least one of them are not
+
 # compare with a model without non significant predictors ( - sulphates and - citric.acid)
 # see if the reduced model is better
 1-pchisq(lmod_S$deviance-regfull$deviance,2)
