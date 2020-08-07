@@ -107,7 +107,7 @@ regnull <- glm(wine~1, family = binomial, data =train)
 ##model with all predictors
 regfull <- glm(wine~., family = binomial, data =train)
 
-# see if all coef are 0
+# see if all coef are 0 - is model useful
 1-pchisq(regnull$deviance-regfull$deviance,12)
 # 0 no at least one of them are not
 
@@ -120,6 +120,7 @@ lmod_S <- glm( wine ~ total.sulfur.dioxide + volatile.acidity +
                  chlorides + citric.acid + quality
                , family = binomial, data = train)
 # removed fixed.acidity and pH
+
 
 # compare with a model without non significant predictors ( - sulphates and - citric.acid)
 # see if the reduced model is better
@@ -155,3 +156,30 @@ t2e = 5 /(5+2398) # 0.002080732
 sen = 2398 /(5+2398) # 0.9979193
 # TN / (TN + FP)
 spe = 837 /(837+9) # 0.9893617
+
+
+########## backward elimination
+backward <- step(regfull, scope=list(lower=regnull, upper=regfull), direction="backward")
+
+lmod_back <- glm(formula = wine ~ volatile.acidity + citric.acid + residual.sugar + 
+                   chlorides + free.sulfur.dioxide + total.sulfur.dioxide + 
+                   density + sulphates + alcohol + quality, family = binomial, 
+                 data = train)
+
+# hypothesis test
+1-pchisq(lmod_back$deviance-regfull$deviance,2) # 0.9201967
+
+# Roc
+preds<-predict(lmod_back,newdata=test, type="response")
+rates<-prediction(preds, test$wine)
+roc_result<-performance(rates,measure="tpr", x.measure="fpr")
+plot(roc_result)
+lines(x = c(0,1), y = c(0,1), col="red")
+
+# auc
+auc<-performance(rates, measure = "auc")
+auc@y.values[[1]] # 0.9983453
+
+# see confusion table
+table(test$wine, preds>0.5)
+# very nice
